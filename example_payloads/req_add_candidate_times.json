@@ -1,0 +1,16 @@
+{
+  "timeslots": [
+    {
+      "date": "2018-11-01",
+      "start_time": 16
+    },
+    {
+      "date": "2018-11-01",
+      "start_time": 12
+    },
+    {
+      "date": "2018-11-02",
+      "start_time": 10
+    }
+  ]
+}
