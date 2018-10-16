@@ -1,0 +1,6 @@
+FROM postgres:10.5
+
+LABEL maintainer="Sebastian Schramm"
+
+# see 'How to extend this image' at https://hub.docker.com/_/postgres/
+ADD initial.sql /docker-entrypoint-initdb.d/
