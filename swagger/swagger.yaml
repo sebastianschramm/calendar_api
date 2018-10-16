@@ -1,0 +1,234 @@
+swagger: '2.0'
+
+info:
+  version: "1"
+  title: Interview Calendar API
+  description: Calendar to manage interview time slots.
+
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+basePath: /
+
+paths:
+  /health:
+    get:
+      summary: Health check of the web server. Returns status code 200 if server is running.
+      responses:
+        200:
+          description: OK
+
+  /api/v1/interviewers:
+    get:
+      summary: Returns a list of all existing interviewers.
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful return of list of users.
+          schema:
+            $ref: "#/definitions/InterviewerListOutput"
+  /api/v1/candidates:
+    get:
+      summary: Returns a list of all existing candidates.
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful return of list of users.
+          schema:
+            $ref: "#/definitions/CandidateListOutput"
+
+  /api/v1/interviewers/{user_id}/timeslots/:
+    get:
+      summary: Returns a list of timeslots for a user {id}.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          description: user ID
+          required: True
+          type: integer
+      responses:
+        200:
+          description: Successful return of list of timeslots.
+          schema:
+            $ref: "#/definitions/InterviewerTimesListOutput"
+    post:
+      summary: Add a list of availability timeslots to the user.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          description: user ID
+          required: True
+          type: integer
+        - in: body
+          name: body
+          required: True
+          schema:
+            $ref: "#/definitions/InterviewerAddTimesInput"
+      responses:
+        200:
+          description: Successful insert of timeslots.
+          schema:
+            $ref: "#/definitions/InterviewerAddTimesOutput"
+
+  /api/v1/candidates/{user_id}/timeslots/:
+    get:
+      summary: Returns a list of timeslots for a user {id}.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          description: user ID
+          required: True
+          type: integer
+      responses:
+        200:
+          description: Successful return of list of timeslots.
+          schema:
+            $ref: "#/definitions/CandidateTimesListOutput"
+    post:
+      summary: Add a list of availability timeslots to the user.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          description: user ID
+          required: True
+          type: integer
+        - in: body
+          name: body
+          required: True
+          schema:
+            $ref: "#/definitions/CandidateAddTimesInput"
+      responses:
+        200:
+          description: Successful insert of timeslots.
+          schema:
+            $ref: "#/definitions/CandidateAddTimesOutput"
+
+  /api/v1/matches/:
+    post:
+      summary:  Returns a list of timeslots when the specified candidate and any of the specified interviewers are available.
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: True
+          schema:
+            $ref: "#/definitions/MatchInput"
+      responses:
+        200:
+          description: Successful return of available timeslots.
+          schema:
+            $ref: "#/definitions/MatchOutput"
+
+definitions:
+  MatchInput:
+    required:
+      - candidate_id
+      - interviewers_ids
+    properties:
+      candidate_id:
+        type: integer
+      interviewers_ids:
+        type: array
+        items:
+          type: integer
+  MatchOutput:
+    required:
+      - available_time_slots
+    properties:
+      available_time_slots:
+        type: array
+        items:
+          $ref: "#/definitions/Time"
+  InterviewerTimesListOutput:
+    required:
+      - interviewer_times
+    properties:
+      interviewer_times:
+        type: array
+        items:
+          $ref: "#/definitions/Time"
+  InterviewerAddTimesInput:
+    required:
+      - timeslots
+    properties:
+      timeslots:
+        type: array
+        items:
+          $ref: "#/definitions/Time"
+  InterviewerAddTimesOutput:
+    required:
+      - interviewer_times
+    properties:
+      interviewer_times:
+        type: string
+  InterviewerListOutput:
+    required:
+      - interviewers
+    properties:
+      interviewers:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  CandidateTimesListOutput:
+    required:
+      - interviewer_times
+    properties:
+      interviewer_times:
+        type: array
+        items:
+          $ref: "#/definitions/Time"
+  CandidateAddTimesInput:
+    required:
+      - timeslots
+    properties:
+      timeslots:
+        type: array
+        items:
+          $ref: "#/definitions/Time"
+  CandidateAddTimesOutput:
+    required:
+      - interviewer_times
+    properties:
+      interviewer_times:
+        type: string
+  CandidateListOutput:
+    required:
+      - candidates
+    properties:
+      candidates:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  User:
+    required:
+      - user_id
+      - user_name
+    properties:
+      user_id:
+        type: integer
+      user_name:
+        type: string
+  Time:
+    required:
+      - date
+      - start_time
+    properties:
+      date:
+        type: string
+        format: date
+      start_time:
+        type: integer
